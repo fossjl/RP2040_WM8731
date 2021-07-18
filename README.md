@@ -15,17 +15,19 @@ You have 2 SPI devices with 2 sets of the 4-pins (SCK, COPI(MOSI), CIPO(MISO), a
 * You'll often see people plug both the CS pins for the DAC And ADC to the same GPIO. That's because they cannot conflict, so there's no need to waste an extra GPIO on them.
 
 ## So you end up with...
-GND->GND
-VCC->VCC
 
-(i2c)
-SDA<->SDA
-SCL<->SCL
+### Power
+* GND->GND
+* VCC->VCC
 
-(i2s)
-SCK<->SCK
-DACL<->GPIO x
-ADCL<->GPIO x (or y)
-COPI<->COPI (for the DAC)
-CIPO<->CIPO (for the ADC)
-SCK <->SCK  
+### (i2c)
+* SDA<->SDA
+* SCL<->SCL
+
+### (i2s)
+* SCK<->SCK
+* DACL<->GPIO x
+* ADCL<->GPIO x (or y)
+* COPI<->COPI (for the DAC)
+* CIPO<->CIPO (for the ADC)
+* SCK <->SCK  

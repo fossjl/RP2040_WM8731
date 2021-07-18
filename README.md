@@ -15,7 +15,7 @@ They each use the SCK clock line
 
 For the serial data line of the i2s interface, DAC is the COPI device, and the ADC is the COPI device.
 
-The DACL / ADCL are used as the WS lines. You'll sometime see those wired together, which you can do if you're sychronizing reading/writing as they do with the standard Linux driver for the WM8731.
+The DACL / ADCL are used as the WS lines. You'll sometime see those wired to a single GPIO on the board, which you can do if you sychronize reading/writing as they do with the standard Linux driver for the WM8731 (or only do one operation at a time).
 
 ## So you end up with...
 

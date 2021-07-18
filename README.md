@@ -9,7 +9,7 @@ Under standard usage conditions (i2c + i2s), you can think of the Mikroe 506 as 
 * An i2s device - the DAC
 * An i2s device - the ADC
  
-You have 2 i2s devices, but the Mikroe board labels them as SPI pins (SCK, COPI(MOSI), CIPO(MISO), and CS(SS))
+The Mikroe board uses SPI labels (SCK, COPI(MOSI), CIPO(MISO), and CS(SS)) for the i2s devices.
 
 * SCK - They share the common SCK pin
 * SD - The DAC is a COPI device (MOSI), and the ADC is a CIPO device (MISO)

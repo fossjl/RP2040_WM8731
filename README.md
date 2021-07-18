@@ -1,4 +1,4 @@
-C header to handle generating i2c commands to control a WM8731 over i2c. Written against the RP2040 "PICO-SDK" but could easily be modified to work with any microcontroller SDK.
+C header to handle generating i2c commands to control a WM8731 over i2c. Written against the RP2040 "PICO-SDK" but architected to be easily portable to work with any microcontroller SDK.
 
 Tested with a Mikroe 506 Audio Codec Proto Board connected to a Raspberry Pi PICO / Sparkfun RP2040 Plus.
 

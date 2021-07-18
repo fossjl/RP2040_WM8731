@@ -11,7 +11,7 @@ Under standard usage conditions (i2c + i2s), you can think of the Mikroe 506 as 
  
 You have 2 i2s devices, but the Mikroe board labels them as SPI pins (SCK, COPI(MOSI), CIPO(MISO), and CS(SS))
 
-* SCK - They share the common SCK clock line
+* SCK - They share the common SCK pin
 * SD - The DAC is a COPI device (MOSI), and the ADC is a CIPO device (MISO)
 * WS - The DACL / ADCL are used for their respective devices, but you'll often see those wired to a single GPIO on the board, which you can do if you sychronize / serialize your IO as they do with the standard Linux driver for the WM8731.
 

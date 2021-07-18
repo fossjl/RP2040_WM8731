@@ -1,4 +1,4 @@
-C header to handle generating i2c commands to control a WM8731 over i2c. Written against the RP2040 "PICO-SDK" but architected to be easily portable to work with any microcontroller SDK.
+C header to handle generating i2c commands to control a WM8731. Written against the RP2040 "PICO-SDK" but architected to be easily portable to work with any microcontroller SDK.
 
 Tested with a Mikroe 506 Audio Codec Proto Board connected to a Raspberry Pi PICO / Sparkfun RP2040 Plus.
 
@@ -15,7 +15,7 @@ They each use the SCK clock line
 
 For the serial data line of the i2s interface, DAC is the COPI device, and the ADC is the COPI device.
 
-The DACL / ADCL are used as the WS lines. You'll sometime see those wired to a single GPIO on the board, which you can do if you sychronize reading/writing as they do with the standard Linux driver for the WM8731 (or only do one operation at a time).
+The DACL / ADCL are used as the WS lines. You'll sometime see those wired to a single GPIO on the board, which you can do if you sychronize (or MUTEX) reading/writing as they do with the standard Linux driver for the WM8731.
 
 ## So you end up with...
 

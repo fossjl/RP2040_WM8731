@@ -1,18 +1,19 @@
-C header to handle generating i2c commands to control a WM8731 over i2c. Written against the RP2040 "PICO-SDK" but could easily be modified to work with any microcontroller SDK.
+C header to handle generating i2c commands to control a WM8731. Written against the RP2040 "PICO-SDK" but architected to be easily portable to work with any microcontroller SDK.
 
 Tested with a Mikroe 506 Audio Codec Proto Board connected to a Raspberry Pi PICO / Sparkfun RP2040 Plus.
 
 # Note on wiring
 
-You can think of the Mikroe 506 as being 3 distinct devices
+Under standard usage conditions (i2c + i2s), you can think of the Mikroe 506 as being 3 distinct devices
 * An i2c device - for configuration commands
-* An SPI device - the DAC
-* An SPI device - the ADC
+* An i2s device - the DAC
+* An i2s device - the ADC
  
-You have 2 SPI devices with 2 sets of the 4-pins (SCK, COPI(MOSI), CIPO(MISO), and CS(SS))
-* SPI devices automatically share the SCK line, so there's no need to duplicate that pin
-* The DAC is read-only, and the ADC is write-only... so there's no need for those pins to appear on the board
-* You'll often see people plug both the CS pins for the DAC And ADC to the same GPIO. That's because they cannot conflict, so there's no need to waste an extra GPIO on them.
+The Mikroe board uses SPI labels (SCK, COPI(MOSI), CIPO(MISO), and CS(SS)) for the i2s devices.
+
+* SCK - They share the common SCK pin
+* SD - The DAC is a COPI device (MOSI), and the ADC is a CIPO device (MISO)
+* WS - The DACL / ADCL are used for their respective devices, but you'll often see those wired to a single GPIO on the board, which you can do if you sychronize / serialize your IO as they do with the standard Linux driver for the WM8731.
 
 ## So you end up with...
 

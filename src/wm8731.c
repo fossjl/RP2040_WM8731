@@ -4,6 +4,15 @@
 #include "hardware/gpio.h"
 #include "pico/binary_info.h"
 
+#include "hardware/i2c.h"
+#include "pico/binary_info.h"
+
+#include "i2c_handling.h"
+#include "wm8731_advanced.h"
+
+#include "data/HeadphoneOutConfig.h"
+#include "data/LineInConfig.h"
+
 #include "wm8731.h"
 
 #define lo(param) ((char *)&param)[0]
@@ -58,31 +67,42 @@ static void WM8731_CMD(char address, unsigned int cmd){
   _i2c_write_blocking(addr, lo(cmd));
 }
 
-void WM8731_set_volume(float leftVolume, float rightVolume) {
-
+/*
+ * Converts a float (0...1) to a volume register value
+ */
+unsigned int convertNormalizedVolume(int vol) {
   unsigned int temp;
-  if (leftVolume <= 0) {
+  if (vol <= 0) {
     temp = 0x0000;
   }
-  else if (leftVolume > 1) {
+  else if (vol > 100) {
     temp = 80 + 0xAF;
   }
   else {
-    temp = (int)(80 * leftVolume) + 0x00AF;
-  }
-  WM8731_CMD(WM8731_REG_LHPHONE_OUT, temp);      //left headphone out
-
-  if (rightVolume <= 0) {
-    temp = 0x0000;
-  }
-  else if (rightVolume > 1) {
-    temp = 80 + 0xAF;
-  }
-  else {
-    temp = (int)(80 * rightVolume) + 0x00AF;
+    temp = (int)(80 * vol/100.0) + 0x00AF;
   }
 
-  WM8731_CMD(WM8731_REG_RHPHONE_OUT, temp);      //left headphone out
+  return temp;
+}
+
+/*
+ * Sets the normalized volume (0...100) on the two headphone channels
+ */
+void WM8731_set_headphone_volume(int leftVolume, int rightVolume) {
+
+
+  // Build & initialize our control structure
+  HeadphoneOutConfig config; 
+  HeadphoneOutConfig_init(&config);
+
+  // Set the left headphone volume
+  config.HPVOL = convertNormalizedVolume(leftVolume);
+  WM8731_CMD(WM8731_REG_LHPHONE_OUT, HeadphoneOutConfig_build(&config));     
+
+  // Set the right headphone volume
+  config.HPVOL = convertNormalizedVolume(rightVolume);
+  WM8731_CMD(WM8731_REG_RHPHONE_OUT, HeadphoneOutConfig_build(&config));     
+
 }
 
 void WM8731_reset() {
@@ -134,13 +154,10 @@ void WM8731_set_clock_out(bool divideByTwo) {
 
 
 
-
-
-
-void WM8731_init() {
+void WM8731_init(i2c_inst_t *i2c, uint baudrate, uint SDA_PIN, uint SCL_PIN) {
 
     // Initialize the i2c interface
-    _i2c_init();
+    _i2c_init(i2c, baudrate, SDA_PIN, SCL_PIN);
 
     // Reset the device
     WM8731_reset();
@@ -197,8 +214,9 @@ void WM8731_init() {
   buf[1] = 0x23;
   i2c_write_blocking(i2c_default, 0x1a, buf, 2, false);
 
+    printf("B...");
     // Set the volume
-    WM8731_set_volume(0.75, 0.25);
+    WM8731_set_headphone_volume(75, 25);
   
     // Enable 16-bit DAC 
     WM8731_configure_DAC(_16_BITS);
@@ -206,3 +224,11 @@ void WM8731_init() {
     // Activate the interface
     WM8731_activate_interface(true);
 }
+
+//--------------------------------------------------------------------------------------------------------------
+// init & build
+//--------------------------------------------------------------------------------------------------------------
+
+
+
+

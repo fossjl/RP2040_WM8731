@@ -16,7 +16,6 @@ static inline int _i2c_write_blocking(const uint8_t a, const uint8_t b) {
   _i2c_cmd_buff[0] = a; 
   _i2c_cmd_buff[1] = b;
 
-  printf("CMD: %x %x\n", 0xff & _i2c_cmd_buff[0], 0xff & _i2c_cmd_buff[1]);
   return i2c_write_blocking(i2c_default, WM8731_ADDRESS, _i2c_cmd_buff, 2, false);
 }
 

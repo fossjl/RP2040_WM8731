@@ -1,6 +1,8 @@
 #ifndef _WM8721_DigitalAudioInterfaceFormat_H
 #define _WM8721_DigitalAudioInterfaceFormat_H
 
+#include "wm8731_api.h"
+
 enum AudioDataFormat {
   MSB_FIRST_RIGHT_JUSTIFIED = 0, // 00
   MSB_FIRST_LEFT_JUSTIFIED  = 1, // 01
@@ -29,5 +31,9 @@ typedef struct DigitalAudioInterfaceFormat_s DigitalAudioInterfaceFormat;
 void DigitalAudioInterfaceFormat_init(DigitalAudioInterfaceFormat *config);
 
 unsigned int DigitalAudioInterfaceFormat_build(DigitalAudioInterfaceFormat *config);
+
+static inline void DigitalAudioInterfaceFormat_send(DigitalAudioInterfaceFormat* cfg) {
+  WM8731_CMD(WM8731_REG_DIGITAL_IF, DigitalAudioInterfaceFormat_build(cfg));
+}
 
 #endif // DigitalAudioInterfaceFormat

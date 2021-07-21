@@ -1,6 +1,8 @@
 #ifndef _WM8721_AnalogPathControl_H
 #define _WM8721_AnalogPathControl_H
 
+#include "wm8731_api.h"
+
 enum SideToneAttenuation {
   NEG_6_DB = 0,  // 00
   NEG_9_DB = 1,  // 01
@@ -23,5 +25,9 @@ typedef struct AnalogPathControl_s AnalogPathControl;
 void AnalogPathControl_init(AnalogPathControl *config);
 
 unsigned int AnalogPathControl_build(AnalogPathControl *config);
+
+static inline void AnalogPathControl_send(AnalogPathControl* cfg) {
+  WM8731_CMD(WM8731_REG_ANALOG_PATH, AnalogPathControl_build(cfg));
+}
 
 #endif // AnalogPathControl

@@ -16,3 +16,21 @@ unsigned int HeadphoneOutConfig_build(HeadphoneOutConfig *config) {
 
     return temp;
 }
+
+/*
+ * Converts a normalized volume (0...100) to a volume register value
+ */
+uint convertNormalizedVolume(uint vol) {
+  uint temp;
+  if (vol <= 0) {
+    temp = 0x0000;
+  }
+  else if (vol > 100) {
+    temp = 80 + 0xAF;
+  }
+  else {
+    temp = (int)(80 * vol/100.0) + 0x00AF;
+  }
+
+  return temp;
+}

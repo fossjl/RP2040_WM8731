@@ -1,6 +1,8 @@
 #ifndef _WM8721_SamplingControl_H
 #define _WM8721_SamplingControl_H
 
+#include "wm8731_api.h"
+
 struct SamplingControl_s {
     unsigned USB_NORMAL :1; // Mode Select
     unsigned BOSR       :1; // Base Over-Sampling Rate 
@@ -14,5 +16,9 @@ typedef struct SamplingControl_s SamplingControl;
 void SamplingControl_init(SamplingControl *config);
 
 unsigned int SamplingControl_build(SamplingControl *config);
+
+static inline void SamplingControl_send(SamplingControl* cfg) {
+  WM8731_CMD(WM8731_REG_SAMPLING_CTRL, SamplingControl_build(cfg));
+}
 
 #endif // SamplingControl

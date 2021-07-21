@@ -8,6 +8,10 @@
 #ifndef _I2C_HANDLING_H
 #define _I2C_HANDLING_H
 
+#include <stdio.h>
+#include "hardware/i2c.h"
+#include "hardware/gpio.h"
+
 static const char WM8731_ADDRESS = 0x1a;       // WM8731 chip address on I2C bus
 
 static uint8_t _i2c_cmd_buff[2];
@@ -21,11 +25,11 @@ static inline int _i2c_write_blocking(const uint8_t a, const uint8_t b) {
 
 static int _i2c_init(i2c_inst_t *i2c, uint baudrate, uint SDA_PIN, uint SCL_PIN) {
   
-  i2c_init(i2c_default, 100 * 1000);
-  gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-  gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-  gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-  gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+  i2c_init(i2c_default, baudrate);
+  gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
+  gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
+  gpio_pull_up(SDA_PIN);
+  gpio_pull_up(SCL_PIN);
 
 }
 

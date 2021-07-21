@@ -1,13 +1,8 @@
-#ifndef _WM8721_ADVANCED_H
-#define _WM8721_ADVANCED_H
+#ifndef _WM8721_DEFS_H
+#define _WM8721_DEFS_H
 
-#include "data/AnalogPathControl.h"
-#include "data/DigitalAudioInterfaceFormat.h"
-#include "data/DigitalPathControl.h"
-#include "data/HeadphoneOutConfig.h"
-#include "data/LineInConfig.h"
-#include "data/PowerDownControl.h"
-#include "data/SamplingControl.h"
+#include <stdio.h>
+#include "i2c_handling.h"
 
 /**************************************************************************************************
 * WM8731 sound chip register addresses
@@ -40,19 +35,29 @@ static const u_int32_t _WM8731_Activate           = 0x01;       // Module is ON
 static const u_int32_t _WM8731_Deactivate         = 0x00;       // Module is OFF
 static const u_int32_t _WM8731_Reset              = 0x00;       // Reset value
 
-static void WM8731_CMD(char address, unsigned int cmd);
-static unsigned int convertNormalizedVolume(int vol);
+/**************************************************************************************************
+* Function WM8731_CMD
+* -------------------------------------------------------------------------------------------------
+* Overview: Function write word of data to WM8731
+* Input: register address, data
+* Output: Nothing
+**************************************************************************************************/
+static inline void WM8731_CMD(char address, unsigned int cmd) {
+  char addr;
+  // B[15:9] Are Control Address Bits
+  // B[8:0]  Are Control Data Bits
+  addr = address << 1;                 // Shift left for one positions
+  addr = addr | (((char *)&cmd)[1] & 1);
 
-void WM8731_send_REG_LLINE_IN(LineInConfig* cfg);
-void WM8731_send_REG_RLINE_IN(LineInConfig* cfg);
-void WM8731_send_REG_LHPHONE_OUT(HeadphoneOutConfig* cfg);
-void WM8731_send_REG_RHPHONE_OUT(HeadphoneOutConfig* cfg);
-void WM8731_send_REG_ANALOG_PATH(AnalogPathControl* cfg);
-void WM8731_send_REG_DIGITAL_PATH(DigitalPathControl* cfg);
-void WM8731_send_REG_PDOWN_CTRL(PowerDownControl* cfg);
-void WM8731_send_REG_DIGITAL_IF(DigitalAudioInterfaceFormat* cfg);
-void WM8731_send_REG_SAMPLING_CTRL(SamplingControl* cfg);
-void WM8731_send_REG_ACTIVE_CTRL(bool active);
-void WM8731_send_REG_RESET();
+  _i2c_write_blocking(addr, ((char *)&cmd)[0]);
+}
 
-#endif // _WM8721_ADVANCED_H
+static inline void WM8731_send_REG_ACTIVE_CTRL(bool active) {
+  WM8731_CMD(WM8731_REG_ACTIVE_CTRL, active ? _WM8731_Activate : _WM8731_Deactivate);
+}
+
+static inline void WM8731_send_REG_RESET() {
+  WM8731_CMD(WM8731_REG_RESET, 0x0);     
+}
+
+#endif // _WM8721_DEFS_H

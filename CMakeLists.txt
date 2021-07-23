@@ -19,5 +19,4 @@ target_include_directories(RP2040_WM8731 INTERFACE
 target_link_libraries(RP2040_WM8731 INTERFACE
     pico_stdlib 
     hardware_i2c
-    pico_audio_i2s
 )

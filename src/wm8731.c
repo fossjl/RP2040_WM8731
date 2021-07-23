@@ -13,10 +13,25 @@
 // Standard initialization functions
 //--------------------------------------------------------------------------------------------------------
 
+
 void WM8731_init_playback(i2c_inst_t *i2c, uint baudrate, uint SDA_PIN, uint SCL_PIN, uint volumeOut, uint IWL) {
 
   // Initialize the i2c interface
   _i2c_init(i2c, baudrate, SDA_PIN, SCL_PIN);
+
+  // Configure the power-down register - NO OUTPD
+  PowerDownControl pdc;
+  PowerDownControl_init(&pdc);
+  pdc.ADCPD    = 0;
+  pdc.DACPD    = 0;
+  pdc.POWEROFF = 0;
+  pdc.MICPD    = 0;
+  pdc.LINEINPD = 1;
+  pdc.CLKOUTPD = 0;
+  pdc.OSCPD    = 0;
+  pdc.OUTPD    = 1;
+
+  PowerDownControl_send(&pdc);
 
   // Reset the device
   WM8731_send_REG_RESET();
@@ -24,6 +39,7 @@ void WM8731_init_playback(i2c_inst_t *i2c, uint baudrate, uint SDA_PIN, uint SCL
   // Configure the line in
   LineInConfig lic;
   LineInConfig_init(&lic);
+  lic.INVOL = 0;
 
   LineInConfig_send_left(&lic);
   LineInConfig_send_right(&lic);
@@ -34,7 +50,13 @@ void WM8731_init_playback(i2c_inst_t *i2c, uint baudrate, uint SDA_PIN, uint SCL
   // Configure the analog path
   AnalogPathControl apc;
   AnalogPathControl_init(&apc);
+  apc.MICBOOST = 1;
+  apc.MUTEMIC = 0;
+  apc.INSEL = 1;
   apc.DACSEL = 1;
+  apc.BYPASS = 0;
+  apc.SIDETONE = 0;
+  apc.SIDEATT = NEG_15_DB;
 
   AnalogPathControl_send(&apc);
 
@@ -45,17 +67,7 @@ void WM8731_init_playback(i2c_inst_t *i2c, uint baudrate, uint SDA_PIN, uint SCL
 
   DigitalPathControl_send(&dpc);
 
-  // Configure the power-down register
-  PowerDownControl pdc;
-  PowerDownControl_init(&pdc);
-  pdc.DACPD    = 0;
-  pdc.OUTPD    = 0;
-  pdc.POWEROFF = 0;
-
-  PowerDownControl_send(&pdc);
-
   // Configure the digital audio interface format
-
   DigitalAudioInterfaceFormat daif;
   DigitalAudioInterfaceFormat_init(&daif);
   daif.IWL = IWL;
@@ -64,14 +76,19 @@ void WM8731_init_playback(i2c_inst_t *i2c, uint baudrate, uint SDA_PIN, uint SCL
   // Configure the sampling control
   SamplingControl sc;
   SamplingControl_init(&sc);
-  sc.USB_NORMAL = 1;
-  sc.CLKIDIV2   = 1;
-  sc.CLKODIV2   = 1;
+  // sc.USB_NORMAL = 0;
+  // sc.CLKIDIV2   = 0;
+  // sc.CLKODIV2   = 0;
 
   SamplingControl_send(&sc);
 
   // Activate the interface
   WM8731_send_REG_ACTIVE_CTRL(true);
+
+  // Enable the OUTPD on the chip
+  pdc.OUTPD    = 0;
+  PowerDownControl_send(&pdc);
+
 }
 
 //--------------------------------------------------------------------------------------------------------

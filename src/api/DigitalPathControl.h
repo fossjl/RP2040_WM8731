@@ -4,10 +4,10 @@
 #include "wm8731_api.h"
 
 enum DeemphasisControl {
-  DISABLE  = 0,  // 00
-  _32000Hz  = 1, // 01
-  _44100Hz = 2,  // 10
-  _48000Hz = 3   // 11
+  DISABLE   = 0,  // 00
+  _32000Hz  = 1,  // 01
+  _44100Hz  = 2,  // 10
+  _48000Hz  = 3   // 11
 };
 
 struct DigitalPathControl_s {

@@ -30,7 +30,6 @@ static int _i2c_init(i2c_inst_t *i2c, uint baudrate, uint SDA_PIN, uint SCL_PIN)
   gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
   gpio_pull_up(SDA_PIN);
   gpio_pull_up(SCL_PIN);
-
 }
 
 #endif // _I2C_HANDLING_H
